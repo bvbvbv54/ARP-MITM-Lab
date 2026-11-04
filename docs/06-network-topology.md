@@ -1,12 +1,12 @@
-# 06 — Topology and evidence boundaries
+# 06 — My lab topology and VirtualBox
 
 [Start](../README.md) · [Host discovery](02-host-discovery.md)
 
 ## The implemented lab topology
 
-The author's successful ARP poisoning run involved a Parrot/Linux lab host, a Windows 11 victim, and a gateway in a controlled VirtualBox environment. The source's `10.0.2.x` addresses are defaults and examples, not published measurements of that run. All artwork uses **illustrative addresses**.
+I ran the successful ARP poisoning experiment with a Parrot OS lab host, a Windows 11 victim, and a gateway in my controlled VirtualBox environment. The saved Parrot console and Windows neighbor screenshots show the `10.0.2.x` addresses below. The SVG artwork uses the documentation-only `192.0.2.x` range so the schematic stays reusable.
 
-| Component | Example label | Network role |
+| Component | Captured lab IP | Network role |
 | --- | --- | --- |
 | Windows victim | `10.0.2.6` | Host whose gateway mapping changes |
 | Parrot/Linux lab VM | `10.0.2.15` | Host implementing the ARP claims |
@@ -20,15 +20,8 @@ The author's successful ARP poisoning run involved a Parrot/Linux lab host, a Wi
 
 An **Internal Network** with the same name on the relevant VMs keeps traffic among those VMs by default. It supplies no external gateway automatically: use an explicitly configured gateway VM if routed traffic is part of the lesson. A **Host-only** network lets the host participate with the VMs but ordinarily has no direct external LAN path; host services and host firewall behavior still matter. Ordinary per-VM **NAT** is not automatically a shared Layer 2 topology. **NAT Network** is a separate mode with guest-to-guest communication when configured on the same network. **Bridged** mode attaches to the physical LAN and can affect unrelated devices, so it is unsuitable for these demonstrations without a dedicated, authorized segment. See [Oracle's mode comparison](https://docs.oracle.com/en/virtualization/virtualbox/7.2/user/networkingdetails.html).
 
-The successful ARP poisoning result confirms the author ran a working lab arrangement. Reproducing it requires checking routes and shared-link membership in the new environment; afterward, verify cache recovery.
+My successful poisoning test depended on the victim and lab host sharing a link on which the ARP claims could reach Windows. A new VirtualBox setup still needs its own route and shared-link checks; afterward, I verify cache recovery.
 
-## Claims ledger
+## What the screenshots show
 
-| Claim | Status in this repository |
-| --- | --- |
-| ARP poisoning succeeded in the controlled lab | Confirmed by the project author |
-| Local Python script defines three modes and attempts normal teardown restoration | Verified by source inspection; source is not in the public checkout |
-| Published Windows script observes cache, reachability, and counters without changing configuration | Verified by source inspection; available in `scripts/win11_probe.ps1` |
-| Traffic was transparently relayed or connectivity failed during a specific run | No published measurement supporting a mode-specific claim |
-| A flood overflowed a table or caused a measured outage | No published capture or measurement |
-| The example `10.0.2.x` addresses were actually used in VirtualBox | Examples only |
+The Windows gateway entry for `10.0.2.1` changed from the genuine gateway MAC to the Parrot OS lab MAC. Wireshark displayed ARP claims for the gateway and victim addresses. The Parrot console showed MITM mode with `forward=1` and increasing packet counters. The screenshots document the core poisoning result; they do not supply a separate takeover or flood result. See [testing notes](../results/README.md).

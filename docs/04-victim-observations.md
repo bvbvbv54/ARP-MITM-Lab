@@ -2,7 +2,7 @@
 
 [Start](../README.md) · [Results template](../results/README.md)
 
-The author's successful ARP poisoning experiment used a Windows 11 victim. The published [`scripts/win11_probe.ps1`](../scripts/win11_probe.ps1) is the existing **read-only** observer. It reads the ARP cache and structured neighbor entries, samples reachability, and reports adapter statistics. It does not edit the cache or network configuration. Its default `GatewayIP` is `10.0.2.1`, a source-code default rather than a published measurement.
+I used Windows 11 as the victim in my successful ARP poisoning experiment. My saved before-and-after neighbor screenshots show the gateway entry for `10.0.2.1` changing to the lab host MAC. The published [`scripts/win11_probe.ps1`](../scripts/win11_probe.ps1) is my **read-only** observer: it reads ARP and structured neighbor entries, samples reachability, and reports adapter statistics without editing network configuration.
 
 ## Identify the active path
 
@@ -27,4 +27,4 @@ arp -a
 
 Record a trusted baseline mapping, then a time-matched observation during an authorized isolated experiment, and finally a recovery state. If the gateway MAC changes, compare it with the actual gateway interface MAC and a packet capture of ARP replies. Verify whether connectivity changed and whether the router is still reachable from a separate unaffected host. Normal network reconfiguration, duplicate addressing, virtual adapter changes, and cache aging can also change entries. A changed mapping is an alert, **not conclusive proof of MITM**.
 
-The script's own text sometimes calls multiple MACs “cache poisoning” or failed ping “gateway unreachable”; interpret those messages alongside the actual route and gateway state. The author confirms the core poisoning outcome, while the public repository contains no preserved victim-side terminal transcript. [Experiment record](../results/README.md) names the result and leaves numerical fields blank.
+The script's own text sometimes calls multiple MACs “cache poisoning” or failed ping “gateway unreachable”; interpret those messages alongside the actual route and gateway state. My before-and-after gateway mapping is the central victim-side observation. [Testing notes](../results/README.md) record it without inventing numerical performance values.

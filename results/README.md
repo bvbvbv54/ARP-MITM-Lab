@@ -1,8 +1,18 @@
-# Experiment record and measurement template
+# Laboratory testing and results
 
 [Start](../README.md) · [Victim observations](../docs/04-victim-observations.md)
 
-**Author-reported result:** ARP cache poisoning was successfully executed in the controlled Parrot OS / Windows 11 laboratory. This statement records the author's first-hand confirmation. The public repository does not include raw captures, terminal output, or numerical results from that run. The table below remains blank so future published measurements can be traced to sanitized evidence rather than reconstructed from memory.
+I successfully ran the ARP poisoning experiment in my controlled Parrot OS / Windows 11 lab. My saved screenshots show the Windows gateway entry changing from the genuine gateway MAC (ending `…:01`) to my Parrot OS lab MAC (ending `…:24`). The Parrot console identifies the same lab MAC, shows `mode=mitm` with `forward=1`, and reports increasing packet counters. A Wireshark capture shows ARP claims for the gateway and victim IPs and duplicate-IP warnings.
+
+| Check | Observation | Result |
+| --- | --- | --- |
+| Windows gateway mapping | `10.0.2.1` changed from the gateway MAC to the lab host MAC | **PASSED** |
+| ARP packet visibility | Wireshark displayed the relevant ARP claims and duplicate-IP indications | **PASSED** |
+| MITM-mode execution | Forwarding was enabled and the lab host reported nonzero packet counters | **PASSED** |
+
+The saved screenshots are being prepared for the [gallery](../assets/screenshots/README.md). Exact performance values, application contents, and outcomes of the other two modes are not inferred from these images.
+
+## Measurement worksheet
 
 | Field | Baseline | During | Recovery |
 | --- | --- | --- | --- |
@@ -17,4 +27,4 @@
 | Capture reference and ARP frame interpretation | — | — | — |
 | Connectivity from an unaffected control host | — | — | — |
 
-Record capture time, interface, and a short method description. Redact personal addresses, credentials, session data, payloads, and unrelated traffic before publication. A changed MAC is an observation; successful interception requires independent path evidence.
+For future numerical comparisons, record capture time, interface, and a short method description. Redact personal addresses, credentials, session data, payloads, and unrelated traffic before publication.

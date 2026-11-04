@@ -39,13 +39,13 @@ sequenceDiagram
 | `ip neigh` | Current neighbor mappings | Complete network inventory |
 | `cat /sys/class/net/<interface>/address` | Current MAC exposed for one local interface | That interface's IPv4 address or another host's MAC |
 
-`/sys` is a virtual filesystem exposing kernel device information. `/sys/class/net/` contains entries for network interfaces; the `address` file exposes each interface's current link-layer address. `cat` reads that file. It does not send a packet or discover another computer. The source script uses `enp0s3` as an example; use the name shown by `ip -br addr` on the actual lab VM:
+`/sys` is a virtual filesystem exposing kernel device information. `/sys/class/net/` contains entries for network interfaces; the `address` file exposes each interface's current link-layer address. `cat` reads that file. It does not send a packet or discover another computer. My Parrot OS console shows `enp0s3`; use the name shown by `ip -br addr` on your own VM:
 
 ```bash
 cat /sys/class/net/enp0s3/address
 ```
 
-Illustrative output: `02:00:00:00:00:15`. This is a teaching value, not a captured result from the author's successful run. The current MAC may be virtual, randomized, or administratively changed; it is not necessarily the permanent hardware address.
+Illustrative output: `02:00:00:00:00:15`. This teaching value is separate from my lab screenshots. The current MAC may be virtual, randomized, or administratively changed; it is not necessarily the permanent hardware address.
 
 ## Read the route
 
@@ -53,7 +53,7 @@ Illustrative output: `02:00:00:00:00:15`. This is a teaching value, not a captur
 ip route
 ```
 
-Illustrative line: `default via 10.0.2.1 dev enp0s3`. `default` handles destinations without a more specific route, `via` names the next-hop gateway IP, and `dev` names the outgoing interface. The `10.0.2.x` values in the original README and script comments are examples, not published measurements.
+Illustrative route line: `default via 10.0.2.1 dev enp0s3`. `default` handles destinations without a more specific route, `via` names the next-hop gateway IP, and `dev` names the outgoing interface. My saved screenshots show `10.0.2.1` as the gateway and `enp0s3` as the Parrot interface; the complete line here is an example of `ip route` formatting.
 
 ## Read the neighbor cache
 
@@ -70,4 +70,4 @@ arp -a
 | Baseline | `10.0.2.1 → 02:00:00:00:00:01` | Host currently associates gateway IP with its expected MAC |
 | Misleading claim | `10.0.2.1 → 02:00:00:00:00:15` | Host may direct gateway-bound frames to another interface |
 
-**These MACs are illustrative teaching values.** Dynamic entries age, expire, and refresh. Static entries are manually configured and can be brittle if hardware or topology changes. In the author's successful ARP poisoning experiment, the key concept was the gateway association changing from the genuine MAC to the lab host MAC. To distinguish that cache effect from traffic relay, compare time-matched captures and connectivity checks. See [victim observations](04-victim-observations.md).
+**These MACs are illustrative teaching values.** Dynamic entries age, expire, and refresh. Static entries are manually configured and can be brittle if hardware or topology changes. In my successful ARP poisoning experiment, the Windows gateway entry changed from the genuine MAC to my lab host MAC. A time-matched packet capture and connectivity check add context about traffic delivery. See [victim observations](04-victim-observations.md).

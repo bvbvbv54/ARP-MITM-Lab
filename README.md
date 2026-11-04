@@ -4,113 +4,96 @@
 
 ### ARP Spoofing & Man-in-the-Middle Security Research Laboratory
 
-**An implemented Parrot OS and Windows 11 laboratory with author-confirmed successful ARP cache poisoning.**
+I developed ARP-MITM-Lab with Python, PowerShell, Parrot OS, Windows 11, and VirtualBox to study how trust in local IPv4 networks can be manipulated and defended. **I successfully tested ARP cache poisoning:** the Windows victim's gateway entry changed to my lab host's MAC, and I captured the associated ARP activity in Wireshark. I also ran the MITM mode with IPv4 forwarding enabled and observed traffic counters on the Parrot OS host.
 
-![Python](https://img.shields.io/badge/Python-3.9%2B-00E676?logo=python&labelColor=20262d) ![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B-00D9FF?logo=powershell&labelColor=20262d) ![Linux](https://img.shields.io/badge/Linux-Parrot%20OS-00E676?logo=linux&labelColor=20262d) ![Windows](https://img.shields.io/badge/Windows-11-00D9FF?logo=windows11&labelColor=20262d) ![VirtualBox](https://img.shields.io/badge/VirtualBox-isolated%20network-FFB020?labelColor=20262d) ![Networking](https://img.shields.io/badge/Networking-ARP%20%2F%20IPv4-FF4D6D?labelColor=20262d)
+![Python](https://img.shields.io/badge/Python-3.9%2B-00E676?logo=python&labelColor=10191e) ![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B-00D9FF?logo=powershell&labelColor=10191e) ![Parrot OS](https://img.shields.io/badge/Parrot-OS-00E676?labelColor=10191e) ![Windows 11](https://img.shields.io/badge/Windows-11-00D9FF?labelColor=10191e) ![VirtualBox](https://img.shields.io/badge/VirtualBox-lab-FFB020?labelColor=10191e) ![Scapy](https://img.shields.io/badge/Scapy-network%20packets-FF4D6D?labelColor=10191e) ![Wireshark](https://img.shields.io/badge/Wireshark-ARP%20analysis-00D9FF?labelColor=10191e)
 
-> Designed for controlled cybersecurity education and authorized network security testing. Use only on systems and networks you own or have explicit permission to assess. [Full notice](DISCLAIMER.md).
+![Lab status: complete](https://img.shields.io/badge/Lab-complete-00D9FF?labelColor=10191e) ![ARP poisoning: passed](https://img.shields.io/badge/ARP%20poisoning-PASSED-00E676?labelColor=10191e)
 
-## Project overview
+> Designed for controlled cybersecurity education and authorized network security testing. Use only systems and networks you own or have explicit permission to assess. [Full notice](DISCLAIMER.md).
 
-ARP-MITM-Lab is a hands-on network security project built with Python, PowerShell, Parrot OS, Windows 11, and VirtualBox. **The author successfully executed the ARP poisoning experiment in a controlled lab.** The project uses that result to explain gateway impersonation, local network trust, victim-side investigation, and defensive monitoring.
+| Project status | Core test | Lab | Focus |
+| --- | --- | --- | --- |
+| **Completed laboratory** | **ARP cache poisoning: PASSED** | Parrot OS · Windows 11 · VirtualBox | ARP, MITM concepts, network analysis, defense |
 
-| Status | Core result | Lab systems | Languages | Focus |
-| --- | --- | --- | --- | --- |
-| Implemented | ARP poisoning succeeded (author report) | Parrot OS attacker, Windows 11 victim, VirtualBox | Python, PowerShell | ARP, Layer 2 trust, observation, defense |
+## What I built
 
-The public checkout contains the original, read-only [Windows PowerShell observer](scripts/win11_probe.ps1), guides, and diagrams. The reviewed Python ARP manipulation script remains local to the author and is not downloadable here.
-
-## Project highlights
-
-- **Built and tested:** the author reports successful ARP cache poisoning in the isolated lab.
-- **Two viewpoints:** the Parrot OS implementation and a read-only Windows 11 observation script were reviewed for this documentation.
-- **Network reasoning:** interface MAC, default route, and neighbor cache explain why the gateway association matters.
-- **Defense:** trusted gateway baselines, captures, switch inspection, and recovery checks turn the demonstration into a detection lesson.
+The Python laboratory implements `mitm`, `takeover`, and `flood` modes. The published [Windows 11 PowerShell observer](scripts/win11_probe.ps1) reads neighbor state, watches the gateway MAC, and samples connectivity and adapter counters. The Python implementation remains in my local project workspace; this public checkout contains the read-only observer, diagrams, and teaching guides. I have kept that distinction explicit in the [repository map](#repository-map).
 
 ## Laboratory architecture
 
-![Normal communication between Windows, gateway, and an external service](assets/diagrams/normal-network.svg)
+![Normal network communication](assets/diagrams/normal-network.svg)
 
-In ordinary off-subnet communication, Windows keeps the external service's IP as the packet destination but sends its **local Ethernet frame** to the gateway's MAC. ARP supplies that next-hop MAC. The gateway routes the IP packet onward in a new link-layer frame. [Topology details](docs/06-network-topology.md).
+For off-subnet traffic, Windows keeps the remote service's **IP address** as the packet destination but sends the current **Ethernet frame** to its gateway's MAC. ARP resolves that next-hop MAC on the local link. A router then forwards the IP packet in a new link-layer frame. [Network foundations](docs/01-network-foundations.md) covers the layers step by step.
 
-### Laboratory Demonstration — Successful ARP Cache Poisoning
+## Laboratory Testing & Results
 
-The author reports that ARP poisoning **worked** in the controlled Parrot OS / Windows 11 environment. The central effect is a manipulated gateway-IP-to-MAC association at the victim: the local frame can be addressed to the laboratory host rather than the genuine gateway interface. This is the practical result around which the project was built.
+My controlled experiment produced these observations. The screenshots are from the real lab; I am preparing publication-safe copies for the [evidence gallery](#evidence-gallery).
 
-The investigation followed the network path: identify the active interface, read its current MAC, find the default gateway, inspect local neighbor mappings, and observe the Windows victim's gateway entry. The illustrations below use documentation addresses; they are **not copied terminal output**.
+| Component | Tested behavior | Observed outcome | Status |
+| --- | --- | --- | --- |
+| Windows neighbor cache | Gateway IP association during poisoning | The gateway entry changed from the genuine gateway MAC to the lab host MAC | **PASSED** |
+| Wireshark ARP capture | ARP traffic during the experiment | Replies claimed the gateway and victim IPv4 addresses; Wireshark flagged duplicate-IP use | **PASSED** |
+| Parrot OS MITM-mode run | Script startup, forwarding setting, traffic visibility | The console showed `mode=mitm`, `forward=1`, and nonzero packet/protocol counters | **PASSED** |
 
-![ARP poisoning concept: misleading claim changes the victim's next hop](assets/diagrams/arp-poisoning.svg)
+The counters establish traffic visible to the lab host during that run. They do not by themselves identify application payloads or prove that encrypted content was decrypted.
 
-### Before and after: one IP, two possible MACs
+### ARP poisoning: the gateway entry changes
 
-![Gateway mapping before and after a misleading ARP claim](assets/diagrams/arp-cache-comparison.svg)
+![ARP poisoning changes the victim's next hop](assets/diagrams/arp-poisoning.svg)
 
-The genuine gateway MAC belongs to the router interface. A poisoned entry points the **same gateway IP** to a different local MAC.
+The Windows before-and-after captures show the same gateway IP, `10.0.2.1`, associated first with the genuine gateway MAC and then with the Parrot OS lab host's MAC. That change is the core result of the poisoning test. The schematic uses documentation-only addresses; the [results notes](results/README.md) summarize the actual observations without exposing full MACs.
 
-### Why this matters for MITM
+![Gateway cache before and after poisoning](assets/diagrams/arp-cache-comparison.svg)
 
-![Parrot OS positioned between Windows and the gateway](assets/diagrams/mitm-topology.svg)
+### MITM position and forwarding
 
-The reviewed `mitm` mode implements two-sided ARP claims and enables IPv4 forwarding. A transparent MITM also depends on working forwarding and path conditions. The author-confirmed ARP poisoning result does not by itself establish decrypted application content or a measured interception volume.
+![Windows victim, Parrot OS lab host, and gateway](assets/diagrams/mitm-topology.svg)
 
-## Existing lab modes
+The `mitm` mode sends two-sided ARP claims and enables IPv4 forwarding so the lab host can sit in the traffic path. My console capture shows the mode running with forwarding enabled and packet counters increasing. ARP control messages and forwarded data are different flows in the diagram. [Mode details](docs/03-laboratory-modes.md) explain what each mode does.
 
-| Mode | Existing implementation | Lab lesson |
-| --- | --- | --- |
-| `mitm` | Bidirectional claims, IPv4 forwarding, packet counters | How a changed next hop can put a host in the traffic path |
-| `takeover` | Gateway claim to the victim without enabling forwarding | Why an incorrect next hop can interrupt delivery |
-| `flood` | Repeated forged ARP claims across addresses derived from the gateway prefix | How repeated control traffic affects neighbor-state investigation |
+## How I investigated the network
 
-The three modes exist in the reviewed local Python script. The author confirms the core poisoning experiment, without asserting measured outcomes for every mode. [Implementation details](docs/03-laboratory-modes.md).
+| Command | Question it answers |
+| --- | --- |
+| `ip -br addr`, `ip link show` | Which interface and IP are configured on Parrot OS? |
+| `cat /sys/class/net/<interface>/address` | What current MAC does Linux expose for that local interface? |
+| `ip route` | Which default gateway and outgoing interface does this host use? |
+| `ip neigh` | Which local IPv4-to-MAC mappings are cached on Linux? |
+| `ipconfig /all`, `route print`, `arp -a` | Which Windows adapter, gateway, and neighbor mappings are active? |
 
-## Investigate the network state
+`/sys/class/net/` is part of Linux's kernel-exposed device information. Its `address` file reports the interface's current link-layer address; it is not an IP address and does not discover another computer. [Network foundations](docs/01-network-foundations.md) explains the command and the gateway route.
 
-| Linux / Parrot OS | Windows 11 | Question answered |
-| --- | --- | --- |
-| `ip -br addr`, `ip link show` | `ipconfig /all` | Which addresses and interfaces are configured here? |
-| `ip route` | `route print` | Which route and gateway would this host use? |
-| `ip neigh` | `arp -a` | Which local IPv4-to-MAC mappings are cached? |
-| `cat /sys/class/net/<interface>/address` | `Get-NetAdapter` | What MAC is currently exposed for this local interface? |
+### Why Nmap and ARP lists differ
 
-`cat /sys/class/net/<interface>/address` reads the local interface's current MAC from Linux's kernel-exposed `/sys` tree; `ip -br addr` shows its configured IP. `ip route` identifies the next-hop gateway, and `ip neigh` or Windows `arp -a` shows cached IP-to-MAC mappings. [Network foundations](docs/01-network-foundations.md) explains each.
+`ip neigh` and `arp -a` show **cached neighbors**. Nmap host discovery actively probes a chosen subnet, while ping asks for an ICMP response. Interface selection, VirtualBox networking mode, subnet boundaries, firewalls, and stale entries can make their lists differ. Two VMs having IP addresses does not mean they share one ARP domain. [Host-discovery guide](docs/02-host-discovery.md).
 
-### Why ARP and Nmap show different devices
+## Windows victim and defensive view
 
-`ip neigh` and `arp -a` are **local caches**. Nmap host discovery actively probes a selected scope; ping asks for an ICMP response. Different adapters, VirtualBox modes, subnet boundaries, firewalls, and stale entries can change the results. Ordinary per-VM VirtualBox NAT does not automatically place guests on one shared ARP segment. [Host-discovery guide](docs/02-host-discovery.md).
+The [PowerShell observer](scripts/win11_probe.ps1) displays raw and structured neighbor entries, watches the gateway MAC, and samples ICMP, TCP connection timing, and adapter counters. [Victim-side walkthrough](docs/04-victim-observations.md).
 
-## Windows victim-side observations
+![Trusted gateway baseline and defensive monitoring](assets/diagrams/defensive-monitoring.svg)
 
-The published [`win11_probe.ps1`](scripts/win11_probe.ps1) reads `arp -a` and structured neighbor entries, watches the gateway MAC, and measures ICMP replies, TCP connection timing, and adapter-counter changes. It does not change Windows network configuration. [How to interpret its measurements](docs/04-victim-observations.md).
+A trusted gateway MAC gives defenders a baseline for spotting unexpected changes. Packet captures help identify conflicting ARP claims; supported managed switches can use Dynamic ARP Inspection to check bindings. TLS protects application data but does not stop an ARP cache change. [Defense and recovery](docs/05-defense-and-mitigation.md).
 
-## Defensive detection and recovery
+## Evidence gallery
 
-![Defensive monitoring of the expected gateway mapping](assets/diagrams/defensive-monitoring.svg)
+I will add genuine, sanitized lab screenshots under [`assets/screenshots/`](assets/screenshots/README.md). The gallery is organized for Parrot OS configuration, interface MAC, gateway route, Windows ARP before/after, Wireshark ARP analysis, victim observations, MITM-mode traffic visibility, and any separately documented takeover or flood results. Images will be embedded beside the matching explanations when the files are ready.
 
-Compare the observed gateway MAC with a trusted baseline, inspect suspicious ARP claims, and verify that legitimate mappings return after a lab run. Supported managed switches can use Dynamic ARP Inspection with trusted bindings. TLS protects application data but does not prevent an ARP cache change. [Defense guide](docs/05-defense-and-mitigation.md).
+## Read the guides
 
-## Read the masterclass
-
-1. [Network foundations](docs/01-network-foundations.md)
-2. [Host discovery and VirtualBox](docs/02-host-discovery.md)
-3. [Implementation and tested result](docs/03-laboratory-modes.md)
-4. [Windows victim observations](docs/04-victim-observations.md)
-5. [Defense and mitigation](docs/05-defense-and-mitigation.md)
-6. [Network topology and evidence boundaries](docs/06-network-topology.md)
-7. [Glossary](docs/glossary.md)
-8. [Experiment record and evidence status](results/README.md)
+[Network foundations](docs/01-network-foundations.md) · [Host discovery and VirtualBox](docs/02-host-discovery.md) · [Laboratory modes](docs/03-laboratory-modes.md) · [Windows observations](docs/04-victim-observations.md) · [Defense](docs/05-defense-and-mitigation.md) · [Topology](docs/06-network-topology.md) · [Glossary](docs/glossary.md) · [Results notes](results/README.md)
 
 ## Repository map
 
 ```text
-README.md                     Start here
-docs/                         Concept lessons and evidence guidance
-assets/                       Local SVG illustrations
-scripts/win11_probe.ps1       Original read-only Windows observer
-results/README.md             Author-reported result and blank measurement template
-DISCLAIMER.md                 Scope and isolation
-SECURITY.md                   Reporting and publication hygiene
+README.md                    Project and successful test
+scripts/win11_probe.ps1      Original read-only Windows observer
+docs/                        Networking and defensive lessons
+assets/diagrams/             GitHub-ready SVG schematics
+assets/screenshots/          Slots for genuine, sanitized lab images
+results/README.md            Test observations and measurement template
+DISCLAIMER.md, SECURITY.md   Responsible use and reporting
 ```
 
-## Evidence and attribution
-
-**Confirmed by the author:** ARP poisoning succeeded in the controlled lab. **Confirmed by source review:** the three Python modes and the published Windows measurement behavior. Raw captures, terminal transcripts, and mode-specific outcome measurements are not published. No license was added because redistribution rights for the local Python code were not established. References: [VirtualBox networking](https://docs.oracle.com/en/virtualization/virtualbox/7.2/user/networkingdetails.html), [Nmap host discovery](https://nmap.org/book/man-host-discovery.html), and [Dynamic ARP Inspection](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3560/software/release/15-0_2_se/configuration/guide/scg3560/swdynarp.html).
+The Python ARP laboratory is part of my local implementation and is not in this public checkout. No license is declared for that source.
