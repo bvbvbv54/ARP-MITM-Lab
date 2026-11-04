@@ -12,5 +12,5 @@ Thumbs.db
 *.swp
 
 # Local source material and workspace instructions are not distributed.
-/scripts/
+/scripts/arp_lab.py
 /AGENTS.md

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">ARP poisoning changes the victim's gateway mapping</title>
+  <desc id="desc">A misleading ARP claim from the laboratory host causes the victim to associate the gateway IP with the laboratory MAC. Data frames then use that MAC as the local next hop.</desc>
+  <defs>
+    <marker id="red-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#FF5E78"/></marker>
+    <marker id="blue-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#00D9FF"/></marker>
+  </defs>
+  <rect width="1200" height="650" rx="24" fill="#040607"/>
+  <rect x="24" y="24" width="1152" height="602" rx="10" fill="#080D10" stroke="#25363D" stroke-width="2"/>
+  <text x="60" y="78" fill="#FFFFFF" font-family="Arial,sans-serif" font-size="34" font-weight="700">ARP poisoning changes the next hop</text>
+  <text x="60" y="112" fill="#C7DAE1" font-family="Arial,sans-serif" font-size="19">The gateway IP stays the same. The victim's cached MAC changes.</text>
+  <rect x="55" y="155" width="290" height="164" rx="8" fill="#10191E" stroke="#00D9FF" stroke-width="2"/>
+  <rect x="55" y="155" width="290" height="9" rx="4" fill="#00D9FF"/>
+  <text x="78" y="201" fill="#FFFFFF" font-family="Arial,sans-serif" font-size="23" font-weight="700">Windows 11 victim</text>
+  <text x="78" y="242" fill="#D7E8ED" font-family="Arial,sans-serif" font-size="18">Gateway IP: 192.0.2.1</text>
+  <text x="78" y="273" fill="#FF8FA2" font-family="Arial,sans-serif" font-size="18">Cached MAC: ...:15</text>
+  <rect x="455" y="155" width="290" height="164" rx="8" fill="#10191E" stroke="#FF5E78" stroke-width="2"/>
+  <rect x="455" y="155" width="290" height="9" rx="4" fill="#FF5E78"/>
+  <text x="478" y="201" fill="#FFFFFF" font-family="Arial,sans-serif" font-size="23" font-weight="700">Parrot OS lab host</text>
+  <text x="478" y="242" fill="#D7E8ED" font-family="Arial,sans-serif" font-size="18">MAC: ...:15</text>
+  <text x="478" y="273" fill="#D7E8ED" font-family="Arial,sans-serif" font-size="18">Claims gateway IP</text>
+  <rect x="855" y="155" width="290" height="164" rx="8" fill="#10191E" stroke="#00E676" stroke-width="2"/>
+  <rect x="855" y="155" width="290" height="9" rx="4" fill="#00E676"/>
+  <text x="878" y="201" fill="#FFFFFF" font-family="Arial,sans-serif" font-size="23" font-weight="700">Genuine gateway</text>
+  <text x="878" y="242" fill="#D7E8ED" font-family="Arial,sans-serif" font-size="18">IP: 192.0.2.1</text>
+  <text x="878" y="273" fill="#8BF4B7" font-family="Arial,sans-serif" font-size="18">Real MAC: ...:01</text>
+  <path d="M600 390 H200" fill="none" stroke="#FF5E78" stroke-width="4" stroke-dasharray="10 8" marker-end="url(#red-arrow)"/>
+  <text x="400" y="373" fill="#FF8FA2" font-family="Arial,sans-serif" font-size="18" font-weight="700" text-anchor="middle">Misleading ARP claim</text>
+  <path d="M200 465 H600" fill="none" stroke="#00D9FF" stroke-width="4" marker-end="url(#blue-arrow)"/>
+  <text x="400" y="448" fill="#71E8FF" font-family="Arial,sans-serif" font-size="18" font-weight="700" text-anchor="middle">Victim's next data frame</text>
+  <text x="60" y="543" fill="#D7E8ED" font-family="Arial,sans-serif" font-size="19">Result: gateway-bound Ethernet frames target the lab MAC instead of the router MAC.</text>
+  <path d="M44 575 H1156" stroke="#25363D" stroke-width="1"/>
+  <circle cx="70" cy="602" r="7" fill="#00E676"/><text x="86" y="608" fill="#D7E8ED" font-family="Arial,sans-serif" font-size="16">Genuine gateway</text>
+  <circle cx="316" cy="602" r="7" fill="#FF5E78"/><text x="332" y="608" fill="#D7E8ED" font-family="Arial,sans-serif" font-size="16">Misleading ARP / cached MAC</text>
+  <circle cx="695" cy="602" r="7" fill="#00D9FF"/><text x="711" y="608" fill="#D7E8ED" font-family="Arial,sans-serif" font-size="16">Local data frame</text>
+  <text x="1130" y="608" text-anchor="end" fill="#9AB3BD" font-family="Arial,sans-serif" font-size="14">Illustrative addresses</text>
+</svg>

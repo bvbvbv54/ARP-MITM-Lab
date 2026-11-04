@@ -1,24 +1,24 @@
-# 03 — What the existing modes implement
+# 03 — Implemented laboratory modes
 
 [Start](../README.md) · [Victim measurements](04-victim-observations.md)
 
-The reviewed local source `scripts/arp_lab.py` defines three modes. The **victim** is the Windows host whose neighbor state is observed; the **gateway** is the next hop for off-subnet IPv4 traffic; the **lab host** is the Parrot/Linux VM running the script. All three must be situated on a link where the relevant ARP frames can reach their intended peers. The source comments use `10.0.2.x` and `enp0s3` as examples, not verified measurements.
+The author successfully executed ARP poisoning in the controlled lab. The reviewed local `scripts/arp_lab.py` defines three modes. The **victim** is the Windows host whose neighbor state is observed; the **gateway** is the next hop for off-subnet IPv4 traffic; the **lab host** is the Parrot/Linux VM running the script. The source comments use `10.0.2.x` and `enp0s3` as examples, not published measurements. The operational Python source remains local; the read-only [Windows observer](../scripts/win11_probe.ps1) is in the public checkout.
 
 ![Normal and manipulated paths](../assets/diagrams/mitm-topology.svg)
 
-*Red arrows represent misleading ARP claims. Cyan arrows represent data frames. The diagram is conceptual, not a captured run.*
+*Red arrows represent misleading ARP claims. Cyan arrows represent data frames. The artwork explains the implemented path; its addresses are illustrative.*
 
 ARP's weak trust model permits an IP-to-MAC claim without cryptographic proof. The script first attempts to resolve victim and gateway MACs. Its ordinary teardown sends corrective ARP frames and restores the prior IPv4-forwarding setting when that prior value is readable. An abrupt kill or failed delivery can prevent complete recovery; verify the peers afterward.
 
-| Mode | Concept | Expected observation if the setup supports it | Security lesson |
+| Mode | Implemented behavior | Observation to examine | Security lesson |
 | --- | --- | --- | --- |
-| `mitm` | Claims each peer's IP at the lab host MAC, enables IPv4 forwarding, and counts sniffed packets | Both peers' mappings change; connectivity may continue; independent capture confirms path | Two-sided cache manipulation plus forwarding can redirect a local flow |
-| `takeover` | Sends a gateway claim to the victim without enabling forwarding | Victim mapping changes; off-subnet connectivity may fail | A wrong next-hop MAC can interrupt delivery even while the router remains healthy |
-| `flood` | Sends many forged claims for addresses in the gateway's `/24` prefix while forwarding is enabled | Capture may show repeated claims; relevant cache entries or connectivity may vary | Neighbor state and control traffic require careful measurement |
+| `mitm` | Claims each peer's IP at the lab host MAC, enables IPv4 forwarding, and counts sniffed packets | Victim and gateway mappings, connectivity, and captured path | Two-sided cache manipulation plus forwarding can redirect a local flow |
+| `takeover` | Sends a gateway claim to the victim without enabling forwarding | Victim mapping and off-subnet reachability | A wrong next-hop MAC can interrupt delivery even while the router remains healthy |
+| `flood` | Sends repeated forged claims for addresses in the gateway's `/24` prefix | ARP capture, cache changes, and connectivity | Neighbor state and control traffic require careful measurement |
 
 ### MITM mode
 
-The source implements bidirectional claims, forwarding, and a sniffer thread that counts packets by protocol and peer IP. Forwarding is essential to a transparent path, but enabling it does not guarantee that the virtual switch, host routing, firewall, or target behavior will permit relay. The counters count frames visible to the script's sniffer; they are not proof of end-to-end interception or data disclosure. Evidence would pair baseline and during-state neighbor entries from both endpoints with a time-matched packet capture and connectivity checks.
+The source implements bidirectional claims, forwarding, and a sniffer thread that counts packets by protocol and peer IP. This is the mode most directly connected to the author's confirmed ARP poisoning result. Forwarding is essential to a transparent path; counters measure frames visible to that sniffer rather than decrypted content. Paired endpoint entries and a capture can document the path in more detail when available.
 
 ### Takeover mode
 
@@ -36,6 +36,6 @@ The source generates repeated forged ARP replies for IPv4 addresses derived from
 
 *Repeated claims are control traffic, not proof that the victim accepted each mapping.*
 
-## Evidence boundary
+## What the completed experiment establishes
 
-The repository supplies source and a prior README, but no saved packet captures, screenshots, console logs, or paired endpoint results. Thus it establishes **implementation intent only**. A changed gateway MAC alone does not identify the sender or prove a relay; a failed ping alone does not prove poisoning. Use the [blank results template](../results/README.md) for future, sanitized observations.
+**Author-reported result:** ARP poisoning succeeded in the controlled lab. **Source-reviewed implementation:** the three modes above and normal-teardown restoration logic. The public repository does not include raw captures or mode-specific measurements, so it makes no packet-count, transparent-interception, or outage claim. [Experiment record](../results/README.md) separates the confirmed account from measurements that could be published later.

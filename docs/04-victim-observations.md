@@ -2,7 +2,7 @@
 
 [Start](../README.md) · [Results template](../results/README.md)
 
-The reviewed local `scripts/win11_probe.ps1` is the existing **read-only** Windows 11 observer. It reads the ARP cache and structured neighbor entries, samples reachability, and reports adapter statistics. It does not edit the cache or network configuration. Its default `GatewayIP` is `10.0.2.1`, a source-code default rather than proof of a captured gateway.
+The author's successful ARP poisoning experiment used a Windows 11 victim. The published [`scripts/win11_probe.ps1`](../scripts/win11_probe.ps1) is the existing **read-only** observer. It reads the ARP cache and structured neighbor entries, samples reachability, and reports adapter statistics. It does not edit the cache or network configuration. Its default `GatewayIP` is `10.0.2.1`, a source-code default rather than a published measurement.
 
 ## Identify the active path
 
@@ -27,4 +27,4 @@ arp -a
 
 Record a trusted baseline mapping, then a time-matched observation during an authorized isolated experiment, and finally a recovery state. If the gateway MAC changes, compare it with the actual gateway interface MAC and a packet capture of ARP replies. Verify whether connectivity changed and whether the router is still reachable from a separate unaffected host. Normal network reconfiguration, duplicate addressing, virtual adapter changes, and cache aging can also change entries. A changed mapping is an alert, **not conclusive proof of MITM**.
 
-The script's own text sometimes calls multiple MACs “cache poisoning” or failed ping “gateway unreachable”; treat those labels as prompts to investigate, not final diagnoses. The source has no saved output in this repository. [Results](../results/README.md) supplies a template without invented values.
+The script's own text sometimes calls multiple MACs “cache poisoning” or failed ping “gateway unreachable”; interpret those messages alongside the actual route and gateway state. The author confirms the core poisoning outcome, while the public repository contains no preserved victim-side terminal transcript. [Experiment record](../results/README.md) names the result and leaves numerical fields blank.

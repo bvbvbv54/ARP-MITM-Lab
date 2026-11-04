@@ -1,8 +1,8 @@
-# Results template — no measurements supplied
+# Experiment record and measurement template
 
 [Start](../README.md) · [Victim observations](../docs/04-victim-observations.md)
 
-No screenshots, packet captures, console outputs, or measured outcomes were present in the supplied project. This template is intentionally blank. Add only sanitized observations from an owned or explicitly authorized isolated lab.
+**Author-reported result:** ARP cache poisoning was successfully executed in the controlled Parrot OS / Windows 11 laboratory. This statement records the author's first-hand confirmation. The public repository does not include raw captures, terminal output, or numerical results from that run. The table below remains blank so future published measurements can be traced to sanitized evidence rather than reconstructed from memory.
 
 | Field | Baseline | During | Recovery |
 | --- | --- | --- | --- |
