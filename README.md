@@ -28,7 +28,7 @@ For off-subnet traffic, Windows keeps the remote service's **IP address** as the
 
 ## Laboratory Testing & Results
 
-My controlled experiment produced these observations. The screenshots are from the real lab; I am preparing publication-safe copies for the [evidence gallery](#evidence-gallery).
+My controlled experiment produced these observations. The original screenshots appear in the [evidence gallery](#evidence-gallery).
 
 | Component | Tested behavior | Observed outcome | Status |
 | --- | --- | --- | --- |
@@ -78,7 +78,25 @@ A trusted gateway MAC gives defenders a baseline for spotting unexpected changes
 
 ## Evidence gallery
 
-I will add genuine, sanitized lab screenshots under [`assets/screenshots/`](assets/screenshots/README.md). The gallery is organized for Parrot OS configuration, interface MAC, gateway route, Windows ARP before/after, Wireshark ARP analysis, victim observations, MITM-mode traffic visibility, and any separately documented takeover or flood results. Images will be embedded beside the matching explanations when the files are ready.
+These are the original screenshots from my controlled lab, included without alteration.
+
+### Windows gateway mapping — before and after
+
+![Windows neighbor entry for the gateway before and during ARP poisoning](screenshots/arp.png)
+
+### Wireshark ARP analysis
+
+![Wireshark capture showing ARP claims and duplicate IP warnings](screenshots/2.png)
+
+### Parrot OS neighbor cache
+
+![Parrot OS neighbor entries on enp0s3](screenshots/arp2.png)
+
+### MITM-mode console
+
+![Parrot OS console showing the MITM-mode run, forwarding enabled, and packet counters](screenshots/4.png)
+
+[Screenshot index and captions](assets/screenshots/README.md).
 
 ## Read the guides
 
@@ -91,7 +109,8 @@ README.md                    Project and successful test
 scripts/win11_probe.ps1      Original read-only Windows observer
 docs/                        Networking and defensive lessons
 assets/diagrams/             GitHub-ready SVG schematics
-assets/screenshots/          Slots for genuine, sanitized lab images
+screenshots/                 Original lab screenshots
+assets/screenshots/          Screenshot index and future additions
 results/README.md            Test observations and measurement template
 DISCLAIMER.md, SECURITY.md   Responsible use and reporting
 ```

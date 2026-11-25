@@ -10,7 +10,7 @@ I successfully ran the ARP poisoning experiment in my controlled Parrot OS / Win
 | ARP packet visibility | Wireshark displayed the relevant ARP claims and duplicate-IP indications | **PASSED** |
 | MITM-mode execution | Forwarding was enabled and the lab host reported nonzero packet counters | **PASSED** |
 
-The saved screenshots are being prepared for the [gallery](../assets/screenshots/README.md). Exact performance values, application contents, and outcomes of the other two modes are not inferred from these images.
+The original screenshots are in the [README gallery](../README.md#evidence-gallery). Exact performance values, application contents, and outcomes of the other two modes are not inferred from these images.
 
 ## Measurement worksheet
 

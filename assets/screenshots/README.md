@@ -2,7 +2,7 @@
 
 [Back to project](../../README.md)
 
-This directory is reserved for **genuine screenshots from my completed lab**. I will add publication-safe images here and embed each one beside its explanation in the main README. The diagrams elsewhere in the repository are illustrations, not substituted captures.
+The [README gallery](../../README.md#evidence-gallery) embeds the four original screenshots from my completed lab, stored in [`screenshots/`](../../screenshots/). The diagrams elsewhere in the repository are illustrations, not substituted captures. This directory remains available for additional labeled images from later lab documentation.
 
 | Suggested file | What it should show | README placement |
 | --- | --- | --- |
@@ -16,4 +16,4 @@ This directory is reserved for **genuine screenshots from my completed lab**. I 
 | `08-mitm-visibility.png` | MITM-mode forwarding setting and traffic counters | MITM position |
 | `09-other-modes.png` | Takeover or flood results, if separately captured | Laboratory modes |
 
-Before adding a screenshot, crop or redact unrelated external IPs, private payloads, credentials, session identifiers, and personal desktop details. Preserve the packet fields and timestamps needed to explain the observation. Do not create replacement terminal output or synthetic packet captures.
+For future screenshots, keep the fields and timestamps needed to explain the observation. Do not create replacement terminal output or synthetic packet captures.
